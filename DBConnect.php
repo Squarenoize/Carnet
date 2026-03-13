@@ -1,9 +1,10 @@
 <?php
+require_once "config.php";
 class DBConnect {
-    static private string $host = "localhost";
-    static private string $username = "root";
-    static private string $password = "";
-    static private string $database = "carnet";
+    static private string $host = DB_HOST;
+    static private string $username = DB_USER;
+    static private string $password = DB_PASSWORD;
+    static private string $database = DB_NAME;
     static private string $charset = "utf8mb4";
     private ?PDO $connection = null;
     private string $userErrorMessage = "";
