@@ -7,7 +7,7 @@ require_once "Command.php";
 $command = new Command($db);
 
 while (true) {
-    $line = readline("Entrez votre commande : ");
+    $line = readline("Entrez votre commande (help, list, detail {id}, create, delete {id}, quit): ");
     
     if(preg_match('/^([a-zA-Z]+)\s+(\d+)$/', $line, $matches) === 1) {
         $cmd = $matches[1];
@@ -28,6 +28,9 @@ while (true) {
             break;
         case "delete":
             $command->delete($id ?? null);
+            break;
+        case "help":
+            $command->help();
             break;
         case "quit":
             $command->quit();
