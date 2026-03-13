@@ -22,7 +22,7 @@ class DBConnect {
      */
     private function connect() {
         try {
-            $this->connection = new PDO("mysql:host=" . self::$host . ";dbname=" . self::$database . ";charset=" . self::$charset, self::$username, self::$password);
+            $this->connection = new PDO("mysql:host=" . static::$host . ";dbname=" . static::$database . ";charset=" . static::$charset, static::$username, static::$password);
         } catch (PDOException $e) {
             $this->userErrorMessage = "Erreur de connexion : " . $e->getMessage() . "\n";
             $this->connection = null;

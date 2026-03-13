@@ -142,6 +142,7 @@ class Command {
         echo "list - Affiche la liste de tous les contacts\n";
         echo "detail {id} - Affiche les détails d'un contact spécifique\n";
         echo "create - Crée un nouveau contact (format : nom,email,numéro de téléphone)\n";
+        echo "update {id} - Met à jour un contact spécifique\n";
         echo "delete {id} - Supprime un contact spécifique\n";
         echo "quit - Quitte l'application\n";
     }
