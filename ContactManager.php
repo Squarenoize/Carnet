@@ -1,4 +1,5 @@
 <?php
+require_once "Contact.php";
 
 class ContactManager {
     private DBConnect $db;
@@ -13,7 +14,12 @@ class ContactManager {
             return [];
         }
         $stmt = $connection->query("SELECT * FROM contact");
-        $contacts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $contactsData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $contacts = [];
+        foreach ($contactsData as $data) {
+            $contacts[] = new Contact($data);
+        }
         return $contacts;
     }
 

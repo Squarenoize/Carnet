@@ -12,9 +12,9 @@ while (true) {
     echo "Vous avez saisi : $line\n";
 
     if ($line === "list") {
-        $contactList = $contactManager->findAll();
-        foreach ($contactList as $contact) {
-            echo "ID: " . $contact['contact_id'] . ", Name: " . $contact['contact_name'] . ", Email: " . $contact['contact_email'] . ", Phone number: " . $contact['contact_phone_number'] . "\n";
+        $contacts = $contactManager->findAll();
+        foreach ($contacts as $contact) {
+            echo $contact . "\n";
         }
         break;
     }
