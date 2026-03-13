@@ -71,6 +71,11 @@ class ContactManager {
         $stmt->execute();
     }
 
+    /**
+     * Met à jour les informations d'un contact existant dans la base de données.
+     * @param Contact $contact Le contact à mettre à jour.
+     * @return void
+     */
     public function update(Contact $contact): void {
         $connection = $this->db->getConnection();
         if ($connection === null) {
@@ -80,7 +85,7 @@ class ContactManager {
         $name = $contact->getName();
         $email = $contact->getEmail();
         $phoneNumber = $contact->getPhoneNumber();
-        
+
         $stmt = $connection->prepare("UPDATE contact SET contact_name = :name, contact_email = :email, contact_phone_number = :phone WHERE contact_id = :id");
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->bindParam(':name', $name);
