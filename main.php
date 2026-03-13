@@ -21,10 +21,16 @@ while (true) {
             $command->list();
             break;
         case "detail":
-            $command->detail($id);
+            $command->detail($id ?? null);
             break;
-            case "create":
+        case "create":
             $command->create();
+            break;
+        case "delete":
+            $command->delete($id ?? null);
+            break;
+        case "quit":
+            $command->quit();
             break;
         default:
             echo "Commande inconnue : " . $cmd . "\n";

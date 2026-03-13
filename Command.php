@@ -16,7 +16,11 @@ class Command {
         }
     }
 
-    public function detail(int $id) {
+    public function detail(int $id = null) {
+        if ($id === null) {
+            echo "Veuillez fournir un ID pour afficher les détails d'un contact.\n";
+            return;
+        }
         $contactManager = new ContactManager($this->db);
         $contact = $contactManager->findById($id);
         if ($contact) {
@@ -52,9 +56,24 @@ class Command {
             $contactManager = new ContactManager($this->db);
             $contactManager->create($name, $email, $phoneNumber);
             echo "Contact créé avec succès.\n";
-            
+
         } else {
             echo "Format incorrect. Veuillez entrer les informations au format : name,email,phoneNumber\n";
         }
+    }
+
+    public function delete(int $id = null) {
+        if ($id === null) {
+            echo "Veuillez fournir un ID pour supprimer un contact.\n";
+            return;
+        }
+        $contactManager = new ContactManager($this->db);
+        $contactManager->delete($id);
+        echo "Contact avec l'id " . $id . " supprimé (si existant).\n";
+    }
+
+    public function quit() {
+        echo "Au revoir !\n";
+        exit(0);
     }
 }

@@ -51,4 +51,14 @@ class ContactManager {
         $stmt->execute();
     }
 
+    public function delete(int $id): void {
+        $connection = $this->db->getConnection();
+        if ($connection === null) {
+            return;
+        }
+        $stmt = $connection->prepare("DELETE FROM contact WHERE contact_id = :id");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
 }
