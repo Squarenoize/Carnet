@@ -29,6 +29,9 @@ while (true) {
         case "delete":
             $command->delete($id ?? null);
             break;
+        case "update":
+            $command->update($id ?? null);
+            break;
         case "help":
             $command->help();
             break;

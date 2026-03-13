@@ -3,7 +3,7 @@ require_once "Contact.php";
 
 class ContactManager {
     private DBConnect $db;
-    
+
     /**
      * Constructeur de la classe ContactManager.
      * @param DBConnect $db Une instance de DBConnect pour gérer la connexion à la base de données.
@@ -65,6 +65,24 @@ class ContactManager {
             return;
         }
         $stmt = $connection->prepare("INSERT INTO contact (contact_name, contact_email, contact_phone_number) VALUES (:name, :email, :phone)");
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':phone', $phoneNumber);
+        $stmt->execute();
+    }
+
+    public function update(Contact $contact): void {
+        $connection = $this->db->getConnection();
+        if ($connection === null) {
+            return;
+        }
+        $id = $contact->getId();
+        $name = $contact->getName();
+        $email = $contact->getEmail();
+        $phoneNumber = $contact->getPhoneNumber();
+        
+        $stmt = $connection->prepare("UPDATE contact SET contact_name = :name, contact_email = :email, contact_phone_number = :phone WHERE contact_id = :id");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':phone', $phoneNumber);

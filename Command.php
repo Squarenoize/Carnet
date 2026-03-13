@@ -77,6 +77,50 @@ class Command {
         }
     }
 
+    public function update(int $id = null) {
+        if ($id === null) {
+            echo "Veuillez fournir un ID pour mettre à jour un contact.\n";
+            return;
+        }
+        $contactManager = new ContactManager($this->db);
+        $contact = $contactManager->findById($id);
+        if ($contact) {
+            echo "Détail du contact avec l'id " . $id . " :\n";
+            echo $contact . "\n";
+            $answer = readline("Voulez-vous modifier le nom ? (y/n) ");
+            if (strtolower($answer) === 'y') {
+                $newName = readline("Entrez le nouveau nom : ");
+                if (empty($newName)) {
+                    echo "Le nom ne peut pas être vide.\n";
+                    return;
+                }
+                $contact->setName($newName);
+            }
+            $answer = readline("Voulez-vous modifier l'email ? (y/n) ");
+            if (strtolower($answer) === 'y') {
+                $newEmail = readline("Entrez le nouvel email : ");
+                if (!filter_var($newEmail, FILTER_VALIDATE_EMAIL)) {
+                    echo "Email invalide.\n";
+                    return;
+                }
+                $contact->setEmail($newEmail);
+            }
+            $answer = readline("Voulez-vous modifier le numéro de téléphone ? (y/n) ");
+            if (strtolower($answer) === 'y') {
+                $newPhoneNumber = readline("Entrez le nouveau numéro de téléphone : ");
+                if (!preg_match('/^\d{10}$/', $newPhoneNumber)) {
+                    echo "Le numéro doit contenir exactement 10 chiffres.\n";
+                    return;
+                }
+                $contact->setPhoneNumber($newPhoneNumber);
+            }
+            $contactManager->update($contact);
+            echo "Contact mis à jour avec succès.\n";
+        } else {
+            echo "Contact avec l'id " . $id . " non trouvé.\n";
+        }
+    }
+
     /**
      * Supprime un contact en fonction de son ID.
      * @param int|null $id L'ID du contact à supprimer. Si null, une erreur est affichée.
