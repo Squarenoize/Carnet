@@ -1,7 +1,10 @@
 <?php
 require_once "DBConnect.php";
 $db = new DBConnect();
-echo $db->getUserErrorMessage();
+if ($db->getUserErrorMessage() !== "") {
+    echo $db->getUserErrorMessage();
+    exit(1);
+}
 
 require_once "Command.php";
 $command = new Command($db);
@@ -39,7 +42,7 @@ while (true) {
             $command->quit();
             break;
         default:
-            echo "Commande inconnue : " . $cmd . "\n";
+            $command->unknownCommand($line);
             break;
     }
 }

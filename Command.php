@@ -3,9 +3,11 @@ require_once "ContactManager.php";
 
 class Command {
     private DBConnect $db;
+    private ContactManager $contactManager;
 
     public function __construct(DBConnect $db) {
         $this->db = $db;
+        $this->contactManager = new ContactManager($this->db);
     }
 
     /**
@@ -13,8 +15,7 @@ class Command {
      * @return void
      */
     public function list() {
-        $contactManager = new ContactManager($this->db);
-        $contacts = $contactManager->findAll();
+        $contacts = $this->contactManager->findAll();
         echo "Liste de tous les contacts :\n";
         foreach ($contacts as $contact) {
             echo $contact . "\n";
@@ -31,8 +32,7 @@ class Command {
             echo "Veuillez fournir un ID pour afficher les détails d'un contact.\n";
             return;
         }
-        $contactManager = new ContactManager($this->db);
-        $contact = $contactManager->findById($id);
+        $contact = $this->contactManager->findById($id);
         if ($contact) {
             echo "Détail du contact avec l'id " . $id . " :\n";
             echo $contact . "\n";
@@ -59,17 +59,16 @@ class Command {
                 echo "Tous les champs sont requis.\n";
                 return;
             }
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            if ($this->validateEmail($email) === false) {
                 echo "Email invalide.\n";
                 return;
             }
-            if (!preg_match('/^\d{10}$/', $phoneNumber)) {
+            if ($this->validatePhoneNumber($phoneNumber) === false) {
                 echo "Le numéro doit contenir exactement 10 chiffres.\n";
                 return;
             }
 
-            $contactManager = new ContactManager($this->db);
-            $contactManager->create($name, $email, $phoneNumber);
+            $this->contactManager->create($name, $email, $phoneNumber);
             echo "Contact créé avec succès.\n";
 
         } else {
@@ -82,8 +81,7 @@ class Command {
             echo "Veuillez fournir un ID pour mettre à jour un contact.\n";
             return;
         }
-        $contactManager = new ContactManager($this->db);
-        $contact = $contactManager->findById($id);
+        $contact = $this->contactManager->findById($id);
         if ($contact) {
             echo "Détail du contact avec l'id " . $id . " :\n";
             echo $contact . "\n";
@@ -99,7 +97,7 @@ class Command {
             $answer = readline("Voulez-vous modifier l'email ? (y/n) ");
             if (strtolower($answer) === 'y') {
                 $newEmail = readline("Entrez le nouvel email : ");
-                if (!filter_var($newEmail, FILTER_VALIDATE_EMAIL)) {
+                if ($this->validateEmail($newEmail) === false) {
                     echo "Email invalide.\n";
                     return;
                 }
@@ -108,13 +106,13 @@ class Command {
             $answer = readline("Voulez-vous modifier le numéro de téléphone ? (y/n) ");
             if (strtolower($answer) === 'y') {
                 $newPhoneNumber = readline("Entrez le nouveau numéro de téléphone : ");
-                if (!preg_match('/^\d{10}$/', $newPhoneNumber)) {
+                if ($this->validatePhoneNumber($newPhoneNumber) === false) {
                     echo "Le numéro doit contenir exactement 10 chiffres.\n";
                     return;
                 }
                 $contact->setPhoneNumber($newPhoneNumber);
             }
-            $contactManager->update($contact);
+            $this->contactManager->update($contact);
             echo "Contact mis à jour avec succès.\n";
         } else {
             echo "Contact avec l'id " . $id . " non trouvé.\n";
@@ -131,8 +129,7 @@ class Command {
             echo "Veuillez fournir un ID pour supprimer un contact.\n";
             return;
         }
-        $contactManager = new ContactManager($this->db);
-        $contactManager->delete($id);
+        $this->contactManager->delete($id);
         echo "Contact avec l'id " . $id . " supprimé (si existant).\n";
     }
 
@@ -147,6 +144,10 @@ class Command {
         echo "quit - Quitte l'application\n";
     }
 
+    public function unknownCommand(string $cmd) {
+        echo "Commande inconnue : " . $cmd . "\n";
+    }
+
     /**
      * Quitte l'application.
      * @return void
@@ -154,5 +155,13 @@ class Command {
     public function quit() {
         echo "Au revoir !\n";
         exit(0);
+    }
+
+    private function validateEmail(string $email): bool {
+        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+    }
+
+    private function validatePhoneNumber(string $phoneNumber): bool {
+        return preg_match('/^\d{10}$/', $phoneNumber) === 1;
     }
 }
