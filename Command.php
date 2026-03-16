@@ -1,5 +1,6 @@
 <?php
 require_once "ContactManager.php";
+require_once "Validation.php";
 
 class Command {
     private DBConnect $db;
@@ -59,11 +60,11 @@ class Command {
                 echo "Tous les champs sont requis.\n";
                 return;
             }
-            if ($this->validateEmail($email) === false) {
+            if (Validation::validateEmail($email) === false) {
                 echo "Email invalide.\n";
                 return;
             }
-            if ($this->validatePhoneNumber($phoneNumber) === false) {
+            if (Validation::validatePhoneNumber($phoneNumber) === false) {
                 echo "Le numéro doit contenir exactement 10 chiffres.\n";
                 return;
             }
@@ -97,7 +98,7 @@ class Command {
             $answer = readline("Voulez-vous modifier l'email ? (y/n) ");
             if (strtolower($answer) === 'y') {
                 $newEmail = readline("Entrez le nouvel email : ");
-                if ($this->validateEmail($newEmail) === false) {
+                if (Validation::validateEmail($newEmail) === false) {
                     echo "Email invalide.\n";
                     return;
                 }
@@ -106,7 +107,7 @@ class Command {
             $answer = readline("Voulez-vous modifier le numéro de téléphone ? (y/n) ");
             if (strtolower($answer) === 'y') {
                 $newPhoneNumber = readline("Entrez le nouveau numéro de téléphone : ");
-                if ($this->validatePhoneNumber($newPhoneNumber) === false) {
+                if (Validation::validatePhoneNumber($newPhoneNumber) === false) {
                     echo "Le numéro doit contenir exactement 10 chiffres.\n";
                     return;
                 }
@@ -155,13 +156,5 @@ class Command {
     public function quit() {
         echo "Au revoir !\n";
         exit(0);
-    }
-
-    private function validateEmail(string $email): bool {
-        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
-    }
-
-    private function validatePhoneNumber(string $phoneNumber): bool {
-        return preg_match('/^\d{10}$/', $phoneNumber) === 1;
     }
 }
